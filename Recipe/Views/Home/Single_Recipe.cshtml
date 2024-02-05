@@ -1,0 +1,293 @@
+﻿@using Recipe.Models;
+@{
+    ViewBag.Title = "Single_Recipe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .item-figure {
+        width: 100%; /* Set the div's width to 100% */
+        overflow: hidden; /* Hide overflow to prevent image from going beyond the div */
+    }
+
+        .item-figure img {
+            width: 100%; /* Set the width of the image to 100% of its parent div */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Ensure the image behaves as a block element */
+        }
+</style>
+
+@foreach (Recipe_Nutrition_Total_Result i in Model)
+{
+    <section class="inner-page-banner bg-common mt-0" data-bg-image="../../Content/img/figure/single-banner5.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumbs-area">
+                        <h1>@i.RecipeName Recipe</h1>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="single-recipe-wrap-layout1 padding-top-74 padding-bottom-50">
+        <div class="container">
+            <div class="row gutters-60">
+                <div class="col-lg-12">
+                    <div class="single-recipe-layout1">
+                        <div class="ctg-name">@i.RecipeName</div>
+
+                        <div class="row mb-4">
+                            <div class="col-xl-9 col-12">
+                                <ul class="entry-meta">
+                                    <li class="single-meta">
+                                        <a href="#">
+                                            <i class="fas fa-user"></i>Author:
+                                            <span>
+                                                @i.Author
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="item-figure">
+                            <img src="@Url.Content(i.ImagePath)" alt="Product">
+                        </div>
+                        <div class="item-feature">
+                            <ul>
+                                <li>
+                                    <div class="feature-wrap">
+                                        <div class="media">
+                                            <div class="feature-icon">
+                                                <i class="far fa-clock"></i>
+                                            </div>
+                                            <div class="media-body space-sm">
+                                                <div class="feature-title">PREP TIME</div>
+                                                <div class="feature-sub-title">@i.PrepTime Mins</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="feature-wrap">
+                                        <div class="media">
+                                            <div class="feature-icon">
+                                                <i class="fas fa-utensils"></i>
+                                            </div>
+                                            <div class="media-body space-sm">
+                                                <div class="feature-title">COOK TIME</div>
+                                                <div class="feature-sub-title">@i.TotalTime Mins</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="feature-wrap">
+                                        <div class="media">
+                                            <div class="feature-icon">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                            <div class="media-body space-sm">
+                                                <div class="feature-title">SERVING</div>
+                                                <div class="feature-sub-title">@i.Servings People</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="feature-wrap">
+                                        <div class="media">
+                                            <div class="feature-icon">
+                                                <i class="far fa-eye"></i>
+                                            </div>
+                                            <div class="media-body space-sm">
+                                                <div class="feature-title">VIEWS</div>
+                                                <div class="feature-sub-title">@i.Views</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                                                        
+                        </div>
+
+                        <div>
+                            <ul class="entry-meta mt-3">
+                                <li class="single-meta">
+                                    <a href="javascript:void(0)">
+                                        <i class="far fa-money-bill-alt"></i>
+                                        Price: @i.rate_total
+                                    </a>
+                                </li>
+                                <li class="single-meta">
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-archive"></i>
+                                        <span>
+                                            Course: @i.Course
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="single-meta">
+                                    <a href="javascript:void(0)">
+                                        <i class="fas fa-random"></i>
+                                        <span>
+                                            Cuisine: @i.Cuisine
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <p class="item-description">
+                            @i.Description
+                        </p>
+
+                        <div class="making-elements-wrap">
+                            <div class="row">
+                                <div class="col-xl-12 col-12">
+            <div class="ingridients-wrap">
+                <h3 class="item-title"><i class="fas fa-list-ul"></i>Ingridients</h3>
+
+                @foreach (Recipe_Ingredients ri in ViewBag.Recipe_Ingredients)
+                {
+                    foreach (Ingredient_Master IM in ViewBag.Ingredient_Master)
+                    {
+                        if (ri.IngredientID == IM.IngredientID)
+                        {
+                            <div class="">
+                                <label for="">@IM.IngredientName x @ri.Quantity @ri.Notes</label>
+                            </div>
+                        }
+                    }
+                }
+
+            </div>
+        </div>
+
+
+
+
+
+
+
+                                <div class="col-xl-6 col-12">
+                                    <div class="nutrition-wrap">
+                                        <h3 class="item-title"><i class="fas fa-info"></i>Nutrition</h3>
+                                        <ul class="nutrition-list">
+                                            <li>
+                                                <div class="nutrition-name">Calories</div>
+                                                <div class="nutrition-value">@(i.calories_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Fat</div>
+                                                <div class="nutrition-value">@(i.total_fat_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Cholesterol</div>
+                                                <div class="nutrition-value">@(i.cholesterol_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Sodium</div>
+                                                <div class="nutrition-value">@(i.sodium_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Calcium</div>
+                                                <div class="nutrition-value">@(i.calcium_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Iron</div>
+                                                <div class="nutrition-value">@(i.iron_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Potassium</div>
+                                                <div class="nutrition-value">@(i.potassium_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Protein</div>
+                                                <div class="nutrition-value">@(i.protein_total ?? 0)</div>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-12">
+                                    <div class="nutrition-wrap">
+                                        @*<h3 class="item-title"><i class="fas fa-info"></i>Nutrition</h3>*@
+                                        <ul class="nutrition-list mt-3">
+                                            <li>
+                                                <div class="nutrition-name">Vitamin A</div>
+                                                <div class="nutrition-value">@(i.vitamin_a_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Vitamin B12</div>
+                                                <div class="nutrition-value">@(i.vitamin_b12_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Vitamin B6</div>
+                                                <div class="nutrition-value">@(i.vitamin_b6_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Vitamin C</div>
+                                                <div class="nutrition-value">@(i.vitamin_c_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Vitamin D</div>
+                                                <div class="nutrition-value">@(i.vitamin_d_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Vitamin E</div>
+                                                <div class="nutrition-value">@(i.vitamin_e_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Vitamin K</div>
+                                                <div class="nutrition-value">@(i.vitamin_k_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Carbohydrate</div>
+                                                <div class="nutrition-value">@(i.carbohydrate_total ?? 0)</div>
+                                            </li>
+                                            <li>
+                                                <div class="nutrition-name">Sugar</div>
+                                                <div class="nutrition-value">@(i.sugars_total ?? 0)</div>
+                                            </li>
+
+                                            
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="direction-wrap-layout1">
+                            <div class="section-heading heading-dark">
+                                <h2 class="item-heading">Instructions</h2>
+                            </div>
+
+                            <div class="">
+
+                                @{
+                                    foreach (Recipe_Instructions r in ViewBag.Recipe_Instructioins)
+                                    {
+                                        <div class="">
+                                            @*<div class="serial-number">@sno Step</div>*@
+                                            <p>
+                                                @Html.Raw(HttpUtility.HtmlDecode(r.Instruction.ToString()))
+                                            </p>
+                                        </div>
+                                    }
+                                }
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+}

@@ -1,0 +1,84 @@
+﻿@using Recipe.Models
+@model IEnumerable<Recipe.Models.Recipe_Nutrition_Total_Result>
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="" style="padding-top:300px;" data-bg-image="../../Content/img/figure/single-banner5.jpg">
+    <div class="container">
+        <div class="row">
+
+        </div>
+    </div>
+</section>
+
+<section class="padding-bottom-18 padding-top-74">
+    <div class="container">
+        <h2>Showing results for <span class="text-primary"><b>Price:</b> @Request.QueryString["Cost"] and <b>Servings:</b> @Request.QueryString["Serving"] </span> </h2>
+
+        <div class="row">
+
+            @if (Model.Count() > 0)
+            {
+                foreach (Recipe_Nutrition_Total_Result i in Model)
+                {
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="product-box-layout1">
+                            <figure class="item-figure">
+                                <a href="/Home/Single_Recipe?RecipeID=@i.RecipeID" onclick="UpdateCount('@i.RecipeID')">
+                                    @if (i.ImagePath != null)
+                                    {
+                                        <img src="@Url.Content(i.ImagePath)" alt="Product" width="370" height="208">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/img/product/product1.jpg"
+                                             alt="Product">
+                                    }
+                                </a>
+                            </figure>
+                            <div class="item-content">
+                                <span class="sub-title">$ @i.rate_total</span>
+                                <h3 class="item-title">
+                                    <a href="/Home/Single_Recipe?RecipeID=@i.RecipeID" onclick="UpdateCount('@i.RecipeID')">
+                                        @i.RecipeName
+                                    </a>
+                                </h3>
+                                <ul class="entry-meta">
+                                    <li><a href="/Home/Single_Recipe?RecipeID=@i.RecipeID" onclick="UpdateCount('@i.RecipeID')"><i class="fas fa-clock"></i>@i.PrepTime Mins</a></li>
+                                    @*<li><a href="/Home/Single_Recipe?RecipeID=@i.RecipeID" onclick="UpdateCount('@i.RecipeID')"><i class="fas fa-user"></i>by <span>@i.Author</span></a></li>*@
+                                    <li><a href="/Home/Single_Recipe?RecipeID=@i.RecipeID" onclick="UpdateCount('@i.RecipeID')"><i class="fas fa-heart"></i><span>@i.Servings</span> Servings</a></li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-md-12 text-center mt-5">
+                    <h3>No Result found...</h3>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <script>
+        function UpdateCount(id) {
+            $.ajax({
+                url: '/Home/UpdateCount',
+                type: "GET",
+                dataType: "JSON",
+                data: { RecipeID: id },
+                success: function (result) {
+                    //$("#DCid_" + id).html(result);
+                }
+            });
+        }
+    </script>
+}

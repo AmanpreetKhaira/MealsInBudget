@@ -1,0 +1,505 @@
+﻿@model IEnumerable<Recipe.Models.Recipe_Nutrition_Total_Result>
+@using Recipe.Models;
+@{
+    ViewBag.Title = "Recipe";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>Recipes</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+            <li class="breadcrumb-item active">Recipes</li>
+            <li class="breadcrumb-item">
+                <span class="badge bg-primary CustomLink" data-bs-toggle="modal" data-bs-target="#MyModal">
+                    <i class="bi bi-plus-circle"></i> Add New
+                </span>
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table datatable">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Recipes
+                    </th>
+                    <th>
+                        Course
+                    </th>
+                    <th>
+                        Cuisine
+                    </th>
+                    <th>
+                        Servings
+                    </th>
+                    <th>
+                        Rate
+                    </th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int sno = 0;
+                    foreach (Recipe_Nutrition_Total_Result i in Model)
+                    {
+                        sno = sno + 1;
+                        <tr>
+                            <td>@sno</td>
+                            <td>@i.RecipeName</td>
+                            <td>@i.Course</td>
+                            <td>@i.Cuisine</td>
+                            <td>@i.Servings</td>
+                            <td>@i.rate_total</td>
+                            <td class="text-center">
+                                <a class="CustomLink editButton" title="Edit" data-bs-toggle="modal" data-bs-target="#MyModal"
+                                   data-id="@i.RecipeID"
+                                   data-name="@i.RecipeName"
+                                   data-desc="@i.Description"
+                                   data-preptime="@i.PrepTime"
+                                   data-totaltime="@i.TotalTime"
+                                   data-course="@i.Course"
+                                   data-cuisine="@i.Cuisine"
+                                   data-servings="@i.Servings"
+                                   data-author="@i.Author"
+                                   data-img="@i.ImagePath"
+                                  >
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <span>|</span>
+                                <a class="text-warning CustomLink add-instruction" title="Add Instructions" data-bs-toggle="modal" data-bs-target="#InstructionModal" data-id="@i.RecipeID" data-insid="@i.InstructionID">
+                                    <i class="bi bi-info-square-fill"></i>
+                                </a>
+                                <span>|</span>
+                                <a class="text-success CustomLink add-ingredient" title="Ingredients" data-bs-toggle="modal" data-bs-target="#IngredientModal" data-id="@i.RecipeID">
+                                    <i class="bi bi-file-text-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="InstructionModal" tabindex="-1" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Instructions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+                    <input type="hidden" id="InstructionRecipeID" name="RecipeID" value="0" />
+                    <input type="hidden" id="InstructionID" name="InstructionID" value="0" />
+
+                    <div class="col-md-12 mb-3">
+                        <label>Instructions <span class="text-danger">*</span></label>
+
+                        <textarea id="Instruction" name="Instruction" class="form-control ckeditor" maxlength="1000" rows="4" placeholder="Instruction has a limit of 500 chars."></textarea>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="Save_Instruction()">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="MyModal" tabindex="-1" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            @using (Html.BeginForm("Add_New_Recipe", "Dashboard", FormMethod.Post, new { enctype = "multipart/form-data", id = "form_submit" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" id="RecipeID" name="RecipeID" value="0" required />
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Fill Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <label>Recipe Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Recipe Name" name="RecipeName" id="RecipeName" autocomplete="off" maxlength="200" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Prep Time <small>(in minutes)</small> <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Prep Time" name="PrepTime" id="PrepTime" autocomplete="off" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Total Time <small>(in minutes)</small> <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Total Time" name="TotalTime" id="TotalTime" autocomplete="off" required />
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label>Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control" placeholder="Description" name="Description" id="Description" autocomplete="off" maxlength="500" required style="white-space: pre-wrap;"></textarea>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label>Course <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Course" name="Course" id="Course" autocomplete="off" maxlength="100" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Cuisine <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Cuisine" name="Cuisine" id="Cuisine" autocomplete="off" maxlength="100" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Servings <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Servings" name="Servings" id="Servings" autocomplete="off" required />
+                        </div>
+                        @*<div class="col-md-3 mb-3">
+                            <label>Cost <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Cost" name="Cost" id="Cost" autocomplete="off" required />
+                        </div>
+
+                        <div class="col-md-2 mb-3">
+                            <label>Calories </label>
+                            <input type="text" class="form-control" placeholder="Calories" name="Calories" id="Calories" autocomplete="off" />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label>Sugar </label>
+                            <input type="text" class="form-control" placeholder="Sugar" name="Sugar" id="Sugar" autocomplete="off" />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label>Protein </label>
+                            <input type="text" class="form-control" placeholder="Protein" name="Protein" id="Protein" autocomplete="off" />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label>Fat </label>
+                            <input type="text" class="form-control" placeholder="Fat" name="Fat" id="Fat" autocomplete="off" />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label>Carbs </label>
+                            <input type="text" class="form-control" placeholder="Carbs" name="Carbs" id="Carbs" autocomplete="off" />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label>FoodFat <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="FoodFat" name="FoodFat" id="FoodFat" autocomplete="off" />
+                        </div>*@
+
+                        <div class="col-md-6 mb-3">
+                            <label>Author <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Author" name="Author" id="Author" autocomplete="off" maxlength="100" required />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label>Image </label>
+                            <input type="file" class="form-control" style="display:none;" placeholder="ImagePath" name="ImagePath" id="ImagePath" autocomplete="off" maxlength="100" />
+                            <input type="text" class="form-control" id="fileNameTextBox" readonly>
+                            <button id="browseButton" type="button" class="btn btn-primary btn-sm float-end">Browse</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="SubmitBtn">Save changes</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="IngredientModal" tabindex="-1" aria-modal="true" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Ingredients</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="Reload()" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="text-center">
+                    <button type="button" class="btn btn-xs btn-primary" id="Ingredient_AddNewBtn" onclick="ShowIngredientForm()">
+                        <i class="fa fa-plus"></i>
+                        Add New
+                    </button>
+                </div>
+                <div class="row" id="IngredientForm" style="display:none">
+
+                    <input type="hidden" id="IngredientRecipeID" value="0" />
+
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <label for="IngredientID">Ingredient</label>
+                            <select class="form-control js-example-basic-single" name="IngredientID" id="IngredientID" required>
+                                @foreach (Ingredient_Master i in ViewBag.Ingredient)
+                                {
+                                    <option value="@i.IngredientID">@i.IngredientName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <div class="form-group">
+                            <label>Quantity <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="Quantity" name="Quantity" placeholder="Quantity" required />
+                        </div>
+                    </div>
+
+                    @*<div class="col-md-6">
+                        <div class="form-group">
+                            <label>Rate <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="Rate" name="Rate" placeholder="Rate" required />
+                        </div>
+                    </div>*@
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Notes <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="Notes" name="Notes" placeholder="Notes" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <span class="text-danger" id="NewIngredientError"></span>
+                        <br />
+                        <button type="button" class="input-sm btn btn-xs btn-primary" id="Ingredient_Add" onclick="Ingredient_Add()">
+                            <i class="fa fa-save"></i>
+                            Save
+                        </button>
+                    </div>
+                </div>
+
+                <hr />
+                <div id="IngredientList"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/ckeditor_4/ckeditor/ckeditor.js"></script>
+
+    <script>
+        $('#MyModal').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        })
+
+        $('#IngredientModal').on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        })
+
+        $("#Description").keydown(function (e) {
+            if (e.keyCode == 13 && !e.shiftKey) {
+                // prevent default behavior
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        $(document).ready(function () {
+            $('#browseButton').on('click', function () {
+                $('#ImagePath').click(); // Trigger click on file input
+            });
+
+            // When a file is selected, display its name in the text box
+            $('#ImagePath').on('change', function () {
+                var fileName = $(this).val().split('\\').pop(); // Get the file name
+                $('#fileNameTextBox').val(fileName); // Set the file name in the text box
+            });
+        });
+
+        $(document).on('click', '.editButton', function () {
+            var rID = $(this).data('id');
+            var rName = $(this).data('name');
+            var desc = $(this).data('desc');
+            var pTime = $(this).data('preptime');
+            var tTime = $(this).data('totaltime');
+            var course = $(this).data('course');
+            var cuisine = $(this).data('cuisine');
+            var serve = $(this).data('servings');
+            var auth = $(this).data('author');
+         //   var cost = $(this).data('cost');
+             var img = $(this).data('img');
+           // var cal = $(this).data('calories');
+           // var sug = $(this).data('sugar');
+           // var pro = $(this).data('protein');
+           // var ft = $(this).data('fat');
+          //  var crb = $(this).data('carbs');
+          //  var ff = $(this).data('foodfat');
+
+            $("#RecipeID").val(rID);
+            $("#RecipeName").val(rName);
+            $("#Description").val(desc);
+            $("#PrepTime").val(pTime);
+            $("#TotalTime").val(tTime);
+            $("#Course").val(course);
+            $("#Cuisine").val(cuisine);
+            $("#Servings").val(serve);
+            $("#Author").val(auth);
+         //   $("#Cost").val(cost);
+            $("#fileNameTextBox").val(img);
+        //    $("#Calories").val(cal);
+         //   $("#Sugar").val(sug);
+          //  $("#Protein").val(pro);
+          //  $("#Fat").val(ft);
+           // $("#Carbs").val(crb);
+           // $("#FoodFat").val(ff);
+        });
+
+        $('#form_submit').submit(function () {
+            $('#SubmitBtn').attr('disabled', true);
+            $("#SubmitBtn").append('<span class="spinner-border spinner-border-sm"></span>');
+            return processForm(this);
+        });
+
+        $(document).ready(function () {
+            $('.add-instruction').click(function () {
+                var recipeID = $(this).data('id');
+                var insID = $(this).data('insID');
+                $('#InstructionRecipeID').val(recipeID);
+                $('#InstructionID').val(insID);
+            });
+        });
+
+        $('#InstructionModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var insID = button.data('insid');
+            if (insID != null || insID != 0) {
+                GetInstruction(insID);
+            }
+        });
+
+        function Save_Instruction() {
+            var InRecipeID = $("#InstructionRecipeID").val();
+            var IninsID = $("#InstructionID").val();
+
+            var InInstruction = CKEDITOR.instances['Instruction'].getData();
+
+            if (InRecipeID == "") {
+                $("#ErrorMsgMaster").html("Please Fill All Fields");
+            }
+            else {
+                $.ajax({
+                    url: '/Dashboard/Add_Recipe_Instruction',
+                    type: "GET",
+                    dataType: "JSON",
+                    data: {
+                        InstructionID: IninsID,
+                        RecipeID: InRecipeID,
+                        Instruction: InInstruction
+                    },
+                    success: function (result) {
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+
+        function GetInstruction(insID) {
+            $.ajax({
+                url: '/Dashboard/FetchInstruction',
+                type: "GET",
+                dataType: "JSON",
+                data: { InstructionID: insID },
+                success: function (result) {
+                    if (result != null) {
+                        CKEDITOR.instances['Instruction'].setData(result.Instruction);
+                        $('#InstructionRecipeID').val(result.RecipeID);
+                        $('#InstructionID').val(result.InstructionID);
+                    } else {
+                        alert('Instruction not found.');
+                    }
+                }
+            });
+        }
+    </script>
+
+    <script> 
+        var recID = 0;
+        $(document).ready(function () {
+            $('.add-ingredient').click(function () {
+                var recipeID = $(this).data('id');
+                $('#IngredientRecipeID').val(recipeID);
+                IngredientForm(recipeID);
+                recID = recipeID;
+            });
+        });
+
+        function IngredientForm(RID) {
+            //  $('#IngredientList').html("<div class='loading'>Loading&#8230;</div>");
+            $('#IngredientList').load("/Dashboard/Ingredients_List", { RecipeID: RID });
+        }
+
+        function ShowIngredientForm() {
+            $("#IngredientForm").fadeIn(500);
+            $("#Ingredient_AddNewBtn").hide();
+        }
+
+        function Ingredient_Add() {
+
+            var InIRid = $("#IngredientRecipeID").val();
+            var InIngID = $("#IngredientID").val();
+          //  var InRate = $("#Rate").val();
+            var InQuantity = $("#Quantity").val();
+            var InNotes = $("#Notes").val();
+
+            if (InIRid == null || InIngID == 0 || InIngID == null || InQuantity == "" || InNotes == "") {
+                $("#NewIngredientError").html('Please Fill all values');
+            }
+            else {
+                $("#NewIngredientError").empty();
+                $('#IngredientList').html("<div class='loading'>Loading&#8230;</div>");
+
+                $.ajax({
+                    url: '/Dashboard/AddIngredient',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: { IngredientID: InIngID, RecipeID: InIRid, Quantity: InQuantity, Notes: InNotes },
+                    success: function (result) {
+                        if (result == true) {
+                            IngredientForm(InIRid);
+                            // $("#IngredientModal").find('form').trigger('reset');
+                            $("input#Quantity,textarea#Notes").val("");
+                            $("#IngredientForm").hide();
+                            $("#Ingredient_AddNewBtn").fadeIn(500);
+                        }
+                    }
+                });
+            }
+        }
+
+        function Del_Ingredient(id) {
+            $.ajax({
+                url: '/Dashboard/Del_Ingredient',
+                type: "GET",
+                dataType: "JSON",
+                data: { ID: id },
+                success: function (result) {
+                    if (result == true) {
+                        IngredientForm(recID);
+                    }
+                }
+            });
+        }
+
+        function Reload() {
+            window.location.reload()
+        }
+    </script>
+}

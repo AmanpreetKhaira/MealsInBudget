@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Recipe.Models.Recipe_Ingredients>
+
+@{
+    Layout = null;
+}
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+            <tr>
+                <th class="text-right">
+                    Sno.
+                </th>
+                <th>Ingredient</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-center">Notes</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int row = 0;
+                foreach (var i in Model)
+                {
+                    row = row + 1;
+
+                    <tr>
+                        <td>@row</td>
+                        <td class="text-center">@i.IngredientID</td>
+                        <td class="text-center">@i.Quantity</td>
+                        <td class="text-left">@i.Notes</td>
+                        <td class="text-center">
+                            <a class="text-danger CustomLink" title="Delete" onclick="Del_Ingredient('@i.ID')">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

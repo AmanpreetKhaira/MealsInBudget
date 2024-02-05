@@ -1,0 +1,359 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Recipe.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Ingredient_Master">
+          <Key>
+            <PropertyRef Name="IngredientID" />
+          </Key>
+          <Property Name="IngredientID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IngredientName" Type="nvarchar" MaxLength="200" />
+          <Property Name="Rate" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Unit" Type="varchar" MaxLength="30" />
+          <Property Name="serving_size" Type="varchar" MaxLength="10" />
+          <Property Name="calories" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="total_fat" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="cholesterol" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="sodium" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_a" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_b12" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_b6" Type="decimal" Precision="7" Scale="3" />
+          <Property Name="vitamin_c" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_d" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_e" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_k" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="calcium" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="iron" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="potassium" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="protein" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="carbohydrate" Type="decimal" Precision="7" Scale="2" />
+          <Property Name="sugars" Type="decimal" Precision="7" Scale="2" />
+        </EntityType>
+        <EntityType Name="Recipe_Ingredients">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IngredientID" Type="int" />
+          <Property Name="RecipeID" Type="int" />
+          <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Notes" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="Recipe_Instructions">
+          <Key>
+            <PropertyRef Name="InstructionID" />
+          </Key>
+          <Property Name="InstructionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RecipeID" Type="int" />
+          <Property Name="Instruction" Type="nvarchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="Recipe_Master">
+          <Key>
+            <PropertyRef Name="RecipeID" />
+          </Key>
+          <Property Name="RecipeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RecipeName" Type="nvarchar" MaxLength="200" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="PrepTime" Type="int" />
+          <Property Name="TotalTime" Type="int" />
+          <Property Name="Course" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cuisine" Type="nvarchar" MaxLength="100" />
+          <Property Name="Servings" Type="int" />
+          <Property Name="Author" Type="varchar" MaxLength="100" />
+          <Property Name="ImagePath" Type="varchar" MaxLength="100" />
+          <Property Name="Views" Type="int" />
+          <Property Name="Cost" Type="decimal" Precision="6" Scale="2" />
+        </EntityType>
+        <Function Name="Recipe_Fetch" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="Recipe_Nutrition_Total" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RecipeID" Type="int" Mode="In" />
+          <Parameter Name="SearchCost" Type="decimal" Mode="In" />
+          <Parameter Name="SearchServing" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="RecipeStoreContainer">
+          <EntitySet Name="Ingredient_Master" EntityType="Self.Ingredient_Master" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Recipe_Ingredients" EntityType="Self.Recipe_Ingredients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Recipe_Instructions" EntityType="Self.Recipe_Instructions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Recipe_Master" EntityType="Self.Recipe_Master" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Recipe" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true" >
+          <FunctionImport Name="Recipe_Fetch" ReturnType="Collection(Recipe.Recipe_Fetch_Result)" />
+          <EntitySet Name="Recipe_Master" EntityType="Recipe.Recipe_Master" />
+          <EntitySet Name="Recipe_Ingredients" EntityType="Recipe.Recipe_Ingredients" />
+          <EntitySet Name="Ingredient_Master" EntityType="Recipe.Ingredient_Master" />
+          <FunctionImport Name="Recipe_Nutrition_Total" ReturnType="Collection(Recipe.Recipe_Nutrition_Total_Result)">
+            <Parameter Name="RecipeID" Mode="In" Type="Int32" />
+            <Parameter Name="SearchCost" Mode="In" Type="Decimal" />
+            <Parameter Name="SearchServing" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="Recipe_Instructions" EntityType="Recipe.Recipe_Instructions" />
+        </EntityContainer>
+        <ComplexType Name="Recipe_Fetch_Result">
+          <Property Type="Int32" Name="RecipeID" Nullable="false" />
+          <Property Type="String" Name="RecipeName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="500" />
+          <Property Type="Int32" Name="PrepTime" Nullable="true" />
+          <Property Type="Int32" Name="TotalTime" Nullable="true" />
+          <Property Type="String" Name="Course" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Cuisine" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="Servings" Nullable="true" />
+          <Property Type="String" Name="Author" Nullable="true" MaxLength="100" />
+          <Property Type="Decimal" Name="Cost" Nullable="true" Precision="6" Scale="2" />
+          <Property Type="String" Name="ImagePath" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="Views" Nullable="true" />
+          <Property Type="String" Name="Instruction" Nullable="true" MaxLength="500" />
+          <Property Type="Int32" Name="InstructionID" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="Recipe_Master">
+          <Key>
+            <PropertyRef Name="RecipeID" />
+          </Key>
+          <Property Name="RecipeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecipeName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="PrepTime" Type="Int32" />
+          <Property Name="TotalTime" Type="Int32" />
+          <Property Name="Course" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cuisine" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Servings" Type="Int32" />
+          <Property Name="Author" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ImagePath" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Views" Type="Int32" />
+          <Property Name="Cost" Type="Decimal" Precision="6" Scale="2" />
+        </EntityType>
+        <EntityType Name="Recipe_Ingredients">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IngredientID" Type="Int32" />
+          <Property Name="RecipeID" Type="Int32" />
+          <Property Name="Quantity" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Notes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Ingredient_Master">
+          <Key>
+            <PropertyRef Name="IngredientID" />
+          </Key>
+          <Property Name="IngredientID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IngredientName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Rate" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Unit" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="serving_size" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="calories" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="total_fat" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="cholesterol" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="sodium" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_a" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_b12" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_b6" Type="Decimal" Precision="7" Scale="3" />
+          <Property Name="vitamin_c" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_d" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_e" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="vitamin_k" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="calcium" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="iron" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="potassium" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="protein" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="carbohydrate" Type="Decimal" Precision="7" Scale="2" />
+          <Property Name="sugars" Type="Decimal" Precision="7" Scale="2" />
+        </EntityType>
+        <ComplexType Name="Recipe_Nutrition_Total_Result">
+          <Property Type="Int32" Name="RecipeID" Nullable="false" />
+          <Property Type="String" Name="RecipeName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="500" />
+          <Property Type="Int32" Name="PrepTime" Nullable="true" />
+          <Property Type="Int32" Name="TotalTime" Nullable="true" />
+          <Property Type="String" Name="Course" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Cuisine" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="Servings" Nullable="true" />
+          <Property Type="String" Name="Author" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="ImagePath" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="Views" Nullable="true" />
+          <Property Type="Decimal" Name="rate_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="calories_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="total_fat_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="cholesterol_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="sodium_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="vitamin_a_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="vitamin_b12_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="vitamin_b6_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="vitamin_c_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="vitamin_d_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="vitamin_e_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="vitamin_k_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="calcium_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="iron_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="potassium_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="protein_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="carbohydrate_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Decimal" Name="sugars_total" Nullable="true" Precision="12" Scale="2" />
+          <Property Type="Int32" Name="InstructionID" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="Recipe_Instructions">
+          <Key>
+            <PropertyRef Name="InstructionID" />
+          </Key>
+          <Property Name="InstructionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecipeID" Type="Int32" />
+          <Property Name="Instruction" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RecipeStoreContainer" CdmEntityContainer="Entities" >
+          <FunctionImportMapping FunctionImportName="Recipe_Fetch" FunctionName="Recipe.Store.Recipe_Fetch">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Recipe.Recipe_Fetch_Result">
+                <ScalarProperty Name="RecipeID" ColumnName="RecipeID" />
+                <ScalarProperty Name="RecipeName" ColumnName="RecipeName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="PrepTime" ColumnName="PrepTime" />
+                <ScalarProperty Name="TotalTime" ColumnName="TotalTime" />
+                <ScalarProperty Name="Course" ColumnName="Course" />
+                <ScalarProperty Name="Cuisine" ColumnName="Cuisine" />
+                <ScalarProperty Name="Servings" ColumnName="Servings" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="Views" ColumnName="Views" />
+                <ScalarProperty Name="Instruction" ColumnName="Instruction" />
+                <ScalarProperty Name="InstructionID" ColumnName="InstructionID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Recipe_Master">
+            <EntityTypeMapping TypeName="Recipe.Recipe_Master">
+              <MappingFragment StoreEntitySet="Recipe_Master">
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="Views" ColumnName="Views" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="Servings" ColumnName="Servings" />
+                <ScalarProperty Name="Cuisine" ColumnName="Cuisine" />
+                <ScalarProperty Name="Course" ColumnName="Course" />
+                <ScalarProperty Name="TotalTime" ColumnName="TotalTime" />
+                <ScalarProperty Name="PrepTime" ColumnName="PrepTime" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="RecipeName" ColumnName="RecipeName" />
+                <ScalarProperty Name="RecipeID" ColumnName="RecipeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Recipe_Ingredients">
+            <EntityTypeMapping TypeName="Recipe.Recipe_Ingredients">
+              <MappingFragment StoreEntitySet="Recipe_Ingredients">
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="RecipeID" ColumnName="RecipeID" />
+                <ScalarProperty Name="IngredientID" ColumnName="IngredientID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ingredient_Master">
+            <EntityTypeMapping TypeName="Recipe.Ingredient_Master">
+              <MappingFragment StoreEntitySet="Ingredient_Master">
+                <ScalarProperty Name="sugars" ColumnName="sugars" />
+                <ScalarProperty Name="carbohydrate" ColumnName="carbohydrate" />
+                <ScalarProperty Name="protein" ColumnName="protein" />
+                <ScalarProperty Name="potassium" ColumnName="potassium" />
+                <ScalarProperty Name="iron" ColumnName="iron" />
+                <ScalarProperty Name="calcium" ColumnName="calcium" />
+                <ScalarProperty Name="vitamin_k" ColumnName="vitamin_k" />
+                <ScalarProperty Name="vitamin_e" ColumnName="vitamin_e" />
+                <ScalarProperty Name="vitamin_d" ColumnName="vitamin_d" />
+                <ScalarProperty Name="vitamin_c" ColumnName="vitamin_c" />
+                <ScalarProperty Name="vitamin_b6" ColumnName="vitamin_b6" />
+                <ScalarProperty Name="vitamin_b12" ColumnName="vitamin_b12" />
+                <ScalarProperty Name="vitamin_a" ColumnName="vitamin_a" />
+                <ScalarProperty Name="sodium" ColumnName="sodium" />
+                <ScalarProperty Name="cholesterol" ColumnName="cholesterol" />
+                <ScalarProperty Name="total_fat" ColumnName="total_fat" />
+                <ScalarProperty Name="calories" ColumnName="calories" />
+                <ScalarProperty Name="serving_size" ColumnName="serving_size" />
+                <ScalarProperty Name="Unit" ColumnName="Unit" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="IngredientName" ColumnName="IngredientName" />
+                <ScalarProperty Name="IngredientID" ColumnName="IngredientID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="Recipe_Nutrition_Total" FunctionName="Recipe.Store.Recipe_Nutrition_Total">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Recipe.Recipe_Nutrition_Total_Result">
+                <ScalarProperty Name="RecipeID" ColumnName="RecipeID" />
+                <ScalarProperty Name="RecipeName" ColumnName="RecipeName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="PrepTime" ColumnName="PrepTime" />
+                <ScalarProperty Name="TotalTime" ColumnName="TotalTime" />
+                <ScalarProperty Name="Course" ColumnName="Course" />
+                <ScalarProperty Name="Cuisine" ColumnName="Cuisine" />
+                <ScalarProperty Name="Servings" ColumnName="Servings" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="Views" ColumnName="Views" />
+                <ScalarProperty Name="rate_total" ColumnName="rate_total" />
+                <ScalarProperty Name="calories_total" ColumnName="calories_total" />
+                <ScalarProperty Name="total_fat_total" ColumnName="total_fat_total" />
+                <ScalarProperty Name="cholesterol_total" ColumnName="cholesterol_total" />
+                <ScalarProperty Name="sodium_total" ColumnName="sodium_total" />
+                <ScalarProperty Name="vitamin_a_total" ColumnName="vitamin_a_total" />
+                <ScalarProperty Name="vitamin_b12_total" ColumnName="vitamin_b12_total" />
+                <ScalarProperty Name="vitamin_b6_total" ColumnName="vitamin_b6_total" />
+                <ScalarProperty Name="vitamin_c_total" ColumnName="vitamin_c_total" />
+                <ScalarProperty Name="vitamin_d_total" ColumnName="vitamin_d_total" />
+                <ScalarProperty Name="vitamin_e_total" ColumnName="vitamin_e_total" />
+                <ScalarProperty Name="vitamin_k_total" ColumnName="vitamin_k_total" />
+                <ScalarProperty Name="calcium_total" ColumnName="calcium_total" />
+                <ScalarProperty Name="iron_total" ColumnName="iron_total" />
+                <ScalarProperty Name="potassium_total" ColumnName="potassium_total" />
+                <ScalarProperty Name="protein_total" ColumnName="protein_total" />
+                <ScalarProperty Name="carbohydrate_total" ColumnName="carbohydrate_total" />
+                <ScalarProperty Name="sugars_total" ColumnName="sugars_total" />
+                <ScalarProperty Name="InstructionID" ColumnName="InstructionID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Recipe_Instructions">
+            <EntityTypeMapping TypeName="Recipe.Recipe_Instructions">
+              <MappingFragment StoreEntitySet="Recipe_Instructions">
+                <ScalarProperty Name="Instruction" ColumnName="Instruction" />
+                <ScalarProperty Name="RecipeID" ColumnName="RecipeID" />
+                <ScalarProperty Name="InstructionID" ColumnName="InstructionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

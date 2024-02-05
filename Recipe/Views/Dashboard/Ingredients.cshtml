@@ -1,0 +1,126 @@
+﻿@model IEnumerable<Recipe.Models.Ingredient_Master>
+
+@{
+    ViewBag.Title = "Ingredients";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>Ingredients</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+            <li class="breadcrumb-item active">Ingredients</li>
+            @*<li class="breadcrumb-item">
+                <span class="badge bg-primary CustomLink" data-bs-toggle="modal" data-bs-target="#MyModal">
+                    <i class="bi bi-plus-circle"></i> Add New
+                </span>
+            </li>*@
+        </ol>
+    </nav>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table datatable">
+            <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Rate
+                    </th>
+                    <th>
+                        Unit
+                    </th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int sno = 0;
+                    foreach (var i in Model)
+                    {
+                        sno = sno + 1;
+                        <tr>
+                            <td>@sno</td>
+                            <td>@i.IngredientName</td>
+                            <td>@i.Rate</td>
+                            <td>@i.Unit</td>
+                            <td class="text-center">
+                                <a class="CustomLink" title="Edit" data-bs-toggle="modal" data-bs-target="#MyModal" onclick="LoadEditForm('@i.IngredientID', '@i.IngredientName', '@i.Rate', '@i.Unit')">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="MyModal" tabindex="-1" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            @using (Html.BeginForm("Add_Ingredients", "Dashboard", FormMethod.Post, new { enctype = "multipart/form-data", id = "form_submit" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" id="IngredientID" name="IngredientID" value="0" required />
+                <div class="modal-header">
+                    <h5 class="modal-title">Fill Ingredient Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-md-12 mb-3">
+                            <label>Ingredient Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Ingredient Name" name="IngredientName" id="IngredientName" autocomplete="off" maxlength="200" required />
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label>Rate <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Rate" name="Rate" id="Rate" autocomplete="off" required />
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label>Unit <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Unit" name="Unit" id="Unit" autocomplete="off" required />
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="SubmitBtn">Save changes</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+
+    <script>
+        function LoadEditForm(ID, Name, rte, unt) {
+            $("#IngredientID").val(ID);
+            $("#IngredientName").val(Name);
+            $("#Rate").val(rte);
+            $("#Unit").val(unt);
+        }
+
+        $('#form_submit').submit(function () {
+            $('#SubmitBtn').attr('disabled', true);
+            $("#SubmitBtn").append('<span class="spinner-border spinner-border-sm"></span>');
+            return processForm(this);
+        });
+    </script>
+}
